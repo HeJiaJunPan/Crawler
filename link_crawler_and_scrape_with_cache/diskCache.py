@@ -58,15 +58,15 @@ class DiskCache(object):
         folder = os.path.dirname(path)
         if not os.path.exists(folder):
             #create dir and father dir
-            os.path.makedirs(folder)
+            os.makedirs(folder)
 
         mode = 'wb' if self.compress else 'w'
         #add expires time for cache
-        result[expires] = (datetime.utcnow() + self.expires).isoformat(timespec='seconds')
+        result['expires'] = (datetime.utcnow() + self.expires).isoformat(timespec='seconds')
         with open(path,mode) as f:
             if self.compress:
                 data = bytes(json.dumps(result),encoding=self.encoding)
-                f.write(data)
+                f.write(zlib.compress(data))
             else:
                 json.dump(result,f)
 
